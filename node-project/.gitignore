@@ -1,0 +1,3 @@
+# IGNORE THESE FILES
+/node_modules
+/config/config.env
