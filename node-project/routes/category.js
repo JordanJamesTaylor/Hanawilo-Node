@@ -2,15 +2,22 @@ const express = require('express');
 const router = express.Router();
 const {
     getCategories,
-    createCategory,
+    deleteCategories,
+    getCategory,
+    postCategory,
     putCategory,
-    deleteCategories
+    deleteCategory
 } = require('../controllers/categoryController.js');
 
 router.route('/')
     .get(getCategories)
-    .post(createCategory)
+    .post(postCategory)
+    .delete(deleteCategories);
+
+router.route(`/:categoryId`)
+    .get(getCategory)
+    .post(postCategory)
     .put(putCategory)
-    .delete(deleteCategories)
+    .delete(deleteCategory);
 
 module.exports = router;

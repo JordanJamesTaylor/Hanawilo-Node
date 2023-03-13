@@ -12,9 +12,12 @@ dotenv.config({ path: './config/config.env' }); // set env vars
 
 const app = express(); // init app with express
 app.use(bodyParser.json()); // parse all json coming to app
-app.use('/song', songRouter); // set endpoints
-app.use('/user', userRouter); // set endpoints
-app.use('/artist', artistRouter); // set endpoints
+// middlewares & endpoints
+app.use(logger);
+app.use(errorHandler);
+app.use('/song', songRouter);
+app.use('/user', userRouter);
+app.use('/artist', artistRouter);
 
 const PORT = process.env.PORT || 5001; // grab PORT from env or set to 5001 if undefined
 
