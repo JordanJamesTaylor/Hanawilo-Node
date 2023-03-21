@@ -1,43 +1,103 @@
-const getItems = (req, res ,next) => {
-    res
-    .status(200)
-    .setHeader('content-type', 'application/json')
-    .json({ message: 'Show me all the items!'})
+const Item = require('../models/Item');
+
+const getItems = async (req, res ,next) => {
+    if(Object.keys(req.query).length){
+        const {
+            gender,
+            price,
+            isClearance,
+            colors,
+            sizes
+        } = req.query;
+    
+        const filter = [];
+
+        if(gender) filter.push(gender);
+        if(price) filter.push(price);
+        if(isClearance) filter.push(isClearance);
+        if(colors) filter.push(colors);
+        if(sizes) filter.push(sizes);
+    
+        for(const query of filer){
+            console.log(`Searching item by ${query}`);
+        }
+    }
+
+    try {
+        const items = await Item.find(); 
+
+        res
+        .status(200)
+        .setHeader('content-type', 'application/json')
+        .json(items)
+    } catch (err) {
+        next(err);
+    }
 }
 
-const deleteItems = (req, res, next) => {
-    res
-    .status(204)
-    .setHeader('content-type', 'application/json')
-    .json({ message: 'Items deleted.'})
+const postItem = async (req, res, next) =>{
+    try {
+        const item = await Item.create(req.body);
+
+        res
+        .status(201)
+        .setHeader('content-type', 'application/json')
+        .json(item)
+    } catch (err) {
+        next(err);
+    }
 }
 
-const postItem = (req, res, next) =>{
-    res
-    .status(201)
-    .setHeader('content-type', 'application/json')
-    .json({ message: 'Item added.'})
+const deleteItems = async (req, res, next) => {
+    try {
+        const deletedItem = await Item.deleteMany();
+
+        res
+        .status(204)
+        .setHeader('content-type', 'application/json')
+        .json(deletedItem)
+    } catch (err) {
+        next(err);
+    }
 }
 
-const getItem = (req, res, next) => {
-    res
-    .status(200)
-    .setHeader('content-type', 'application/json')
-    .json({ message: `Show me the Item with item ID ${req.params.itemId}` })
+const getItem = async (req, res, next) => {
+    try {
+        const item = await Item.findById(req.params.itemId)
+
+        res
+        .status(200)
+        .setHeader('content-type', 'application/json')
+        .json(item)
+    } catch (err) {
+        next(err);
+    }
 }
 
-const putItem = (req, res, next) => {
-    res
-    .status(200)
-    .setHeader('content-type', 'application/json')
-    .json({ message: `Updated the item with ID ${req.params.itemId}` })
+const putItem = async (req, res, next) => {
+    try {
+        const item = await Item.findByIdAndUpdate(req.params.itemId, req.body, { new: true })
+
+        res
+        .status(200)
+        .setHeader('content-type', 'application/json')
+        .json(item)
+    } catch (err) {
+        next(err);
+    }
 }
 
-const deleteItem = (req, res, next) => {
-    res
-    .status(204)
-    .setHeader('contetn-type', 'application/json')
-    .json({ message: `Delted the item with Item ID ${req.params.itemId}` })
+const deleteItem = async (req, res, next) => {
+    try {
+        const deletedItem = await Item.findByIdAndDelete(req.params.itemId)
+
+        res
+        .status(204)
+        .setHeader('contetn-type', 'application/json')
+        .json(deletedItem)
+    } catch (err) {
+        next(err);
+    }
 }
 
 

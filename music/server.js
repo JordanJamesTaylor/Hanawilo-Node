@@ -3,12 +3,15 @@ const dotenv = require('dotenv'); // sets env variables
 const bodyParser = require('body-parser'); // helps read JSON
 const logger = require('./middlewares/logger');
 const errorHandler = require('./middlewares/errorHandler');
+const connectDB = require('./config/db');
 
 const artistRouter = require('./routes/artist.js'); // routes
 const songRouter = require('./routes/song.js'); // routes
 const userRouter = require('./routes/user.js'); // routes
 
 dotenv.config({ path: './config/config.env' }); // set env vars
+// Connect to DB before init express app
+connectDB();
 
 const app = express(); // init app with express
 app.use(bodyParser.json()); // parse all json coming to app

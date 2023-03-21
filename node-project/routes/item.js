@@ -15,7 +15,7 @@ router.route('/')
     .post(postItem)
     .delete(deleteItems)
 
-router.route('/itemId')
+router.route('/:itemId')
     .get(getItem)
     .put(putItem)
     .delete(deleteItem)
