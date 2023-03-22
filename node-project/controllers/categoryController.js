@@ -3,10 +3,10 @@
 const Category = require('../models/Category');
 
 const getCategories = async (req, res, next) => {
-    if(Object.keys(req.query).length){
-        const category = req.query.category
-        console.log(`Searching for category ${category}`);
-    }
+    // if(Object.keys(req.query).length){
+    //     const category = req.query.category
+    //     console.log(`Searching for category ${category}`);
+    // }
 
     try {
         // return every category from DB

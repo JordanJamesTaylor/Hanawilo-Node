@@ -1,27 +1,27 @@
 const Item = require('../models/Item');
 
 const getItems = async (req, res ,next) => {
-    if(Object.keys(req.query).length){
-        const {
-            gender,
-            price,
-            isClearance,
-            colors,
-            sizes
-        } = req.query;
+    // if(Object.keys(req.query).length){
+    //     const {
+    //         gender,
+    //         price,
+    //         isClearance,
+    //         colors,
+    //         sizes
+    //     } = req.query;
     
-        const filter = [];
+    //     const filter = [];
 
-        if(gender) filter.push(gender);
-        if(price) filter.push(price);
-        if(isClearance) filter.push(isClearance);
-        if(colors) filter.push(colors);
-        if(sizes) filter.push(sizes);
+    //     if(gender) filter.push(gender);
+    //     if(price) filter.push(price);
+    //     if(isClearance) filter.push(isClearance);
+    //     if(colors) filter.push(colors);
+    //     if(sizes) filter.push(sizes);
     
-        for(const query of filer){
-            console.log(`Searching item by ${query}`);
-        }
-    }
+    //     for(const query of filer){
+    //         console.log(`Searching item by ${query}`);
+    //     }
+    // }
 
     try {
         const items = await Item.find(); 

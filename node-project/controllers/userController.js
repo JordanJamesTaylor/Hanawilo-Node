@@ -1,10 +1,10 @@
 const User = require('../models/User');
 
 const getUsers = async (req, res ,next) => {
-    if(Object.keys(req.query).length){
-        const user = req.query.user
-        console.log(`Searching for user ${user}`);
-    }
+    // if(Object.keys(req.query).length){
+    //     const user = req.query.user
+    //     console.log(`Searching for user ${user}`);
+    // }
     
     try {
         const users = await User.find();

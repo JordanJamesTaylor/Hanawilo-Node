@@ -1,59 +1,98 @@
-const getUsers = (req, res, next) => {
-    if(Object.keys(req.query).length){
-        const {
-            userName,
-            gender
-        } = req.query;
+const User = require('../models/User');
+
+const getUsers = async (req, res, next) => {
+    // if(Object.keys(req.query).length){
+    //     const {
+    //         userName,
+    //         gender
+    //     } = req.query;
         
-        const filter = [];
+    //     const filter = [];
     
-        if(userName) filter.push(userName);
-        if(gender) filter.push(gender);
+    //     if(userName) filter.push(userName);
+    //     if(gender) filter.push(gender);
     
-        for(const el of filter){
-            console.log(`Searching users by: ${query}`)
-        }
+    //     for(const el of filter){
+    //         console.log(`Searching users by: ${query}`)
+    //     }
+    // }
+
+    try {
+        const result = await User.find();
+
+        res
+        .status(200)
+        .setHeader('content-type', 'application/json')
+        .json(result);
+    } catch (err) {
+        next(err);
     }
-
-    res
-    .status(200)
-    .setHeader('content-type', 'application/json')
-    .json({ message: 'Get all users' })
 }
 
-const deleteUsers = (req, res, next) => {
-    res
-    .status(200) // use 200 to display message in postman rather than 204
-    .setHeader('content-type', 'application/json')
-    .json({ message: 'All users deleted.' })
+const deleteUsers = async (req, res, next) => {
+    try {
+        const result = await User.deleteMany();
+
+        res
+        .status(200) // use 200 to display message in postman rather than 204
+        .setHeader('content-type', 'application/json')
+        .json(result);
+    } catch (err) {
+        next(err);
+    }
 }
 
-const getUser = (req, res, next) => {
-    res
-    .status(200)
-    .setHeader('content-type', 'application/json')
-    .json({ messgae: `Get user with ID: ${req.params.userId}.` })
+const getUser = async (req, res, next) => {
+    try{
+        const result = await User.findById(req.params.userId);
+
+        res
+        .status(200)
+        .setHeader('content-type', 'application/json')
+        .json(result);
+    } catch (err) {
+        next(err);
+    }
 }
 
-const postUser = (req, res, next) => {
-    res
-    .status(201)
-    .setHeader('content-type', 'application/json')
-    .json({ message: 'New user added.' })
+const postUser = async (req, res, next) => {
+    try {
+        const result = await User.create(req.body);
+
+        res
+        .status(201)
+        .setHeader('content-type', 'application/json')
+        .json(result);
+    } catch (err) {
+        next(err);
+    }
 }
 
-const putUser = (req, res, next) => {
-    res
-    .status(202)
-    .setHeader('content-type', 'application/json')
-    .json({ messgae: `Update user with ID: ${req.params.userId}.` })
+const putUser = async (req, res, next) => {
+    try {
+        const result = await User.findByIdAndUpdate(req.params.userId, req.body, { new: true });
+
+        res
+        .status(202)
+        .setHeader('content-type', 'application/json')
+        .json(result);
+    } catch (err) {
+        next(err);
+    }
 }
 
-const deleteUser = (req, res, next) => {
-    res
-    .status(200) // use 200 to display message in postman rather than 204
-    .setHeader('content-type', 'application/json')
-    .json({ messgae: `Deleted user with ID: ${req.params.userId}` })
+const deleteUser = async (req, res, next) => {
+    try {
+        const result = await User.findByIdAndDelete(req.params.userId);
+
+        res
+        .status(200) // use 200 to display message in postman rather than 204
+        .setHeader('content-type', 'application/json')
+        .json(result);
+    } catch (err) {
+        next(err);
+    }
+    
 }
 
 module.exports = {
