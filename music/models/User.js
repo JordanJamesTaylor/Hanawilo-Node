@@ -1,12 +1,14 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const validator = require('validator');
 
-const userSchema = new Schema({
+const UserSchema = new Schema({
     userName: {
         type: String,
         unique: true,
         required: true,
-        maxLength: 10
+        maxLength: 10,
+        validate: (userName) => validator.trim(userName)
     },
     gender: {
         type: String,
@@ -22,11 +24,13 @@ const userSchema = new Schema({
     },
     email: {
         type: String,
-        required: true
+        required: true,
+        validate: (email) => validator.isEmail(email)
     },
     password: {
         type: String,
-        required: true
+        required: true,
+        validate: (password) => validator.isStrongPassword(password)
     },
     firstName: {
         type: String,
@@ -40,6 +44,20 @@ const userSchema = new Schema({
     }
 },{
     timestamps: true
-})
+});
+// executes after controller but before reaching the DB 
+// before saving to DB...
+UserSchema.pre('save', function(next){
+    this.userName = this.userName.trim();
+    this.firstName = this.firstName.trim();
+    this.lastName = this.lastName.trim();
 
-module.exports = mongoose.model("User", userSchema);
+    next();
+});
+
+// executes after pre hooks
+UserSchema.post('save', function(){
+    this.gender = this.gender.toUpperCase();
+});
+
+module.exports = mongoose.model("User", UserSchema);

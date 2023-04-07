@@ -1,24 +1,43 @@
 const User = require('../models/User');
 
 const getUsers = async (req, res, next) => {
-    // if(Object.keys(req.query).length){
-    //     const {
-    //         userName,
-    //         gender
-    //     } = req.query;
-        
-    //     const filter = [];
-    
-    //     if(userName) filter.push(userName);
-    //     if(gender) filter.push(gender);
-    
-    //     for(const el of filter){
-    //         console.log(`Searching users by: ${query}`)
-    //     }
-    // }
+    // sorting query param
+    const filter = {};
+    // pagination query param
+    const options = {};
 
+    if(Object.keys(req.query).length){ // check if params were sent
+        const { // destructure query params
+            sortByAge,
+            userName,
+            age,
+            limit
+        } = req.query;
+        // if data was sent, instantiate key for filter
+        // mongoose -> anything truthy will be returned
+        if(userName) filter.userName = true;
+        if(age) filter.age = true;
+        // check for pagination
+        if(limit) options.limit = limit;
+        if(sortByAge) options.sort = {
+            // sort in ascending or descending order
+            // age: sortByAge === 'asc' ? 'ascending' : 'descending'
+            // age: sortByAge === 'asc' ? '1' : '-1'
+            age: sortByAge
+        }
+        // console.log("---HERE---");
+        // console.log("FILTER: ", filter);
+        // console.log("OPTIONS: ", options);
+    }
+    /*
+        arg1 = search for item by ID
+        arg2 = return item with specific fields (i.e. just userName)
+        arg3 = pagination and sorting
+
+        pass in empty object as we already have an endpoint to look for user by ID
+    */
     try {
-        const result = await User.find();
+        const result = await User.find({}, filter, options);
 
         res
         .status(200)
@@ -91,8 +110,7 @@ const deleteUser = async (req, res, next) => {
         .json(result);
     } catch (err) {
         next(err);
-    }
-    
+    } 
 }
 
 module.exports = {

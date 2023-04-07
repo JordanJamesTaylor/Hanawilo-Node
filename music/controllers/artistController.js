@@ -1,26 +1,29 @@
 const Artist = require('../models/Artist');
 
 const getArtists = async (req, res, next) => {
-    // if(Object.keys(req.query).length){
-    //     const {
-    //         firstName,
-    //         lastName,
-    //         genre
-    //     } = req.query.firstName;
+    const filter = {};
+    const options = {};
+    
+    if(Object.keys(req.query).length){
+        const {
+            sortByGenre,
+            firstName,
+            lastName,
+            genre,
+            limit
+        } = req.query;
         
-    //     const filter = [];
-    
-    //     if(firstName) filter.push(firstName);
-    //     if(lastName) filter.push(lastName);
-    //     if(genre) filter.push(genre);
-    
-    //     for(const el of filter){
-    //         console.log(`Searching artists by: ${query}`);
-    //     }
-    // }
+        if(firstName) filter.firstName = true;
+        if(lastName) filter.lastName = true;
+        if(genre) filter.genre = true;
+        if(limit) options.limit = limit;
+        if(sortByGenre) options.sort = {
+            genre: sortByGenre
+        };
+    }
 
     try {
-        const result = await Artist.find();
+        const result = await Artist.find({}, filter, options);
 
         res
         .status(200) // default status code\\\\\\\\\\
