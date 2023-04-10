@@ -4,6 +4,9 @@ const bodyParser = require('body-parser'); // helps read JSON
 const logger = require('./middlewares/logger'); // logs activity
 const errorHandler = require('./middlewares/errorHandler'); // error handler fn
 const connectDB = require('./config/db'); // mongoose database
+const cookieParser = require('cookie-parser'); // populates cookit obj + secret string (req.secret)
+const fileUpload = require('express-fileupload'); // populates req.files with file uploads
+
 // routes
 const artistRouter = require('./routes/artist.js');
 const songRouter = require('./routes/song.js');
@@ -17,6 +20,8 @@ const app = express();
 // parse all json coming to app
 app.use(bodyParser.json());
 // middlewares
+app.use(fileUpload());
+app.use(cookieParser());
 app.use(logger);
 app.use(errorHandler);
 // endpoints

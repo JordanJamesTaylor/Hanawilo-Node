@@ -4,6 +4,8 @@ const dotenv = require('dotenv'); // sets environment variables
 const logger = require('./middlewares/logger');
 const errorHandler = require('./middlewares/errorHandler');
 const connectDB = require('./config/db');
+const fileupload = require('express-fileupload');
+const cookieParser = require('cookie-parser');
 
 // import routes
 const category = require('./routes/category');
@@ -11,7 +13,7 @@ const item = require('./routes/item');
 const user = require('./routes/user');
 const cors = require('cors'); // allowed urls other than the origin
 
-// set environment found in config.env 
+// set environment found in config.env -> accessible in all files
 dotenv.config({ path: './config/config.env'});
 // connect DB before init express app
 connectDB();
@@ -24,6 +26,10 @@ app.use(cors({
     origin: '*' // allow any origin
 }));
 // route endpoints
+app.use(fileupload());
+app.use(cookieParser());
+app.use(logger);
+app.use(errorHandler);
 app.use('/category', category);
 app.use('/item', item);
 app.use('/user', user);

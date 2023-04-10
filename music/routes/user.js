@@ -4,14 +4,14 @@ const {
     getUsers,
     deleteUsers,
     getUser,
-    postUser,
+    createUser,
     putUser,
     deleteUser
 } = require('../controllers/userController');
 
 router.route('/')
     .get(getUsers)
-    .post(postUser)
+    .post(createUser)
     .delete(deleteUsers)
 
 router.route('/:userId')

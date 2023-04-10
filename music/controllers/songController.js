@@ -60,7 +60,7 @@ const getSong = async (req, res, next) => {
     }
 }
 
-const postSong = async (req, res, next) => {
+const createSong = async (req, res, next) => {
     try {
         const result = await Song.create(req.body);
 
@@ -101,29 +101,40 @@ const deleteSong = async (req, res, next) => {
 
 const getSongRatings = async (req, res, next) => {
     try {
-        const result = await Song.findById(req.params.songId)
+        const song = await Song.findById(req.params.songId);
+        let rating = song.ratings.find((rating._id).equals(req.params.ratingId));
+
+        if(!rating) rating = { message: `No rating found with ID: ${req.params.ratingId}` };
 
         res
         .status(200)
         .setHeader('Content-Type', 'application/json')
-        .json(result.ratings);
+        .json(rating);
     } catch (err) {
         next(err);
     }
 }
 
-const postSongRating = async (req, res, next) => {
+const updateSongRating = async (req, res, next) => {
     try{ 
-        const result = await Song.findById(req.params.songId);
-        result.ratings.push(req.body);
+        const song = await Song.findById(req.params.songId);
+        let rating = song.ratings.find((rating._id).equals(req.params.ratingId));
 
-        // asynchronous save new rating to DB
-        await result.save();
+        if(rating){
+            const ratingIndexPosition = song.ratings.indexOf(rating);
+            song.ratings.splice(ratingIndexPosition, 1, req.body);
+            rating = req.body;
+            // asynchronous save new rating to DB
+            await song.save();
+
+        } else {
+            rating = { message: `No rating found with ID: ${req.params.ratingId}`};
+        }
 
         res
         .status(200)
         .setHeader('Content-Type', 'application/json')
-        .json(result);
+        .json(rating);
     } catch (err) {
         next(err);
     }
@@ -131,15 +142,24 @@ const postSongRating = async (req, res, next) => {
 
 const deleteSongRating = async (req, res, next) => {
     try {
-        const result = await Song.findById(req.params.songId);
-        result.ratings = [];
+        const song = await Song.findById(req.params.songId);
+        let rating = song.ratings.fing((rating._id).equals(req.params.ratingId));
 
-        await result.save();
+        if(rating){
+            const ratingIndexPosition = song.ratings.indexOf(rating);
+            song.ratings.splice(ratingIndexPosition, 1);
+
+            rating = { message: 'Rating successfully deleted.'};
+
+            await song.save();
+        } else {
+            rating = { message: `No rating found with ID: ${req.params.ratingId}`};
+        }
 
         res
         .status(200)
         .setHeader('Content-Type', 'application/json')
-        .json({ message: `Deleted all ratings for song with ID of ${req.params.songId}`})
+        .json(rating);
     } catch (err) {
         next(err);
     }
@@ -148,11 +168,11 @@ const deleteSongRating = async (req, res, next) => {
 module.exports = {
     getSongs,
     deleteSongs,
-    postSong,
+    createSong,
     getSong,
     putSong,
     deleteSong,
     getSongRatings,
-    postSongRating,
+    updateSongRating,
     deleteSongRating
 }

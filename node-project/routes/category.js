@@ -9,15 +9,16 @@ const {
     deleteCategory
 } = require('../controllers/categoryController.js');
 
+const protectedRoute = require('../middlewares/auth.js');
+
 router.route('/')
     .get(getCategories)
-    .post(postCategory)
-    .delete(deleteCategories);
+    .post(protectedRoute, postCategory)
+    .delete(protectedRoute, deleteCategories);
 
 router.route(`/:categoryId`)
     .get(getCategory)
-    .post(postCategory)
-    .put(putCategory)
-    .delete(deleteCategory);
+    .put(protectedRoute, putCategory)
+    .delete(protectedRoute, deleteCategory);
 
 module.exports = router;

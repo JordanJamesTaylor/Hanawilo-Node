@@ -1,4 +1,5 @@
 const Artist = require('../models/Artist');
+const path = require('path');
 
 const getArtists = async (req, res, next) => {
     const filter = {};
@@ -26,7 +27,7 @@ const getArtists = async (req, res, next) => {
         const result = await Artist.find({}, filter, options);
 
         res
-        .status(200) // default status code\\\\\\\\\\
+        .status(200) // default status code
         .setHeader('content-type', 'application/json')
         .json(result);
     } catch (err) {
@@ -60,10 +61,10 @@ const getArtist = async (req, res, next) => {
     }
 }
 
-const postArtist = async (req, res, next) => {
+const createArtist = async (req, res, next) => {
     try {
         const result = await Artist.create(req.body);
-
+        
         res
         .status(201)
         .setHeader('content-type', 'application/json')
@@ -99,11 +100,39 @@ const deleteArtist = async (req, res, next) => {
     }
 }
 
+const postArtistImage = async (req, res, next) => {
+    try {
+        const err = { message: 'Error uploading image' };
+        if(!req.files) next(err);
+        
+        const file = req.files.file;
+
+        if(!file.mimetype.startsWith('image')) next(err);
+        if(file.size > process.env.MAX_FILE_SIZE) next(err);
+
+        file.name = `photo_${req.params.artistId}${path.parse(file.name).ext}`;
+
+        const filePath = process.env.FILE_UPLOAD_PATH + file.name;
+
+        file.mv(filePath, async (err) => {
+            await Artist.findByIdAndUpdate(req.params.artistId, { image: file.name });
+
+            res
+            .status(200)
+            .setHeader('Content-Type', 'application/json')
+            .json({ message: 'Image uploaded.' })
+        })
+    } catch (err) {
+        next(err);
+    }
+}
+
 module.exports = {
     getArtists,
     deleteArtists,
     getArtist,
-    postArtist,
+    createArtist,
     putArtist,
-    deleteArtist
+    deleteArtist,
+    postArtistImage
 }

@@ -64,7 +64,7 @@ const deleteUsers = async (req, res, next) => {
 const getUser = async (req, res, next) => {
     try{
         const result = await User.findById(req.params.userId);
-
+        
         res
         .status(200)
         .setHeader('content-type', 'application/json')
@@ -74,14 +74,11 @@ const getUser = async (req, res, next) => {
     }
 }
 
-const postUser = async (req, res, next) => {
+const createUser = async (req, res, next) => {
     try {
         const result = await User.create(req.body);
 
-        res
-        .status(201)
-        .setHeader('content-type', 'application/json')
-        .json(result);
+        sendTokenResponse(result, 201, res);
     } catch (err) {
         next(err);
     }
@@ -113,11 +110,25 @@ const deleteUser = async (req, res, next) => {
     } 
 }
 
+const sendTokenResponse = async (user, statusCode, res) => {
+    const token = user.getSignedJwtToken();
+
+    const options = {
+        expires: new Date(Date.now) + process.env.JWT_COOKIE_EXPIRE * 24 *60 * 60 * 1000,
+        httpOnly: true 
+    };
+
+    res
+    .status(statusCode)
+    .cookie('token', token, options)
+    .json({ success: true, token });
+}
+
 module.exports = {
     getUsers,
     deleteUsers,
     getUser,
-    postUser,
+    createUser,
     putUser,
     deleteUser
 }

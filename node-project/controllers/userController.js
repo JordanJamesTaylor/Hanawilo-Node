@@ -12,7 +12,7 @@ const getUsers = async (req, res ,next) => {
         res
         .status(200)
         .setHeader('content-type', 'application/json')
-        .json(users)
+        .json(users);
     } catch (err) {
         next(err);
     }
@@ -21,11 +21,8 @@ const getUsers = async (req, res ,next) => {
 const postUser = async (req, res, next) =>{
     try {
         const user = await User.create(req.body);
-
-        res
-        .status(201)
-        .setHeader('content-type', 'application/json')
-        .json(user)
+        // invoke helper fn
+        sendTokenResponse(user, 201, res);
     } catch (err) {
         next(err);
     }
@@ -38,7 +35,7 @@ const deleteUsers = async (req, res, next) => {
         res
         .status(204)
         .setHeader('content-type', 'application/json')
-        .json(deletedUsers)
+        .json(deletedUsers);
     } catch (err) {
         next(err);
     }
@@ -51,7 +48,7 @@ const getUser = async (req, res, next) => {
         res
         .status(200)
         .setHeader('content-type', 'application/json')
-        .json(user)
+        .json(user);
     } catch (err) {
         next(err);
     }
@@ -64,7 +61,7 @@ const putUser = async (req, res, next) => {
         res
         .status(200)
         .setHeader('content-type', 'application/json')
-        .json(user)
+        .json(user);
     } catch (err) {
         next(err);
     }
@@ -77,10 +74,32 @@ const deleteUser = async (req, res, next) => {
         res
         .status(204)
         .setHeader('contetn-type', 'application/json')
-        .json(deletedUser)
+        .json(deletedUser);
     } catch (err) {
         next(err);
     }
+}
+// helper fn
+const sendTokenResponse = (user, statusCode, res) => {
+    // create JWT token
+    const token = user.getSignedJwtToken(); 
+    // set cookie properties 
+    const options = {
+        // taken current time and add cookie expiration (env set to 20 ms)
+        // 24h * 60m * 60s * 1000ms
+        expires: new Date(Date.now() + process.env.JWT_COOKIE_EXPIRE * 24 * 60 * 60 * 1000),
+        // prevents cross site scripting
+        httpOnly: true
+    }
+
+    // .cookie() to send cookie
+    // arg1 = set name of cookie
+    // arg2 = token value
+    // arg3 = options for cookie
+    res
+    .status(statusCode)
+    .cookie('token', token, options)
+    .json(token);
 }
 
 module.exports = {
