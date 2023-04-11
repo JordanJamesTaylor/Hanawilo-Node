@@ -9,7 +9,7 @@ const protectedRoute = async (req, res, next) => {
         token = req.headers.authorization.split(' ')[1];
     };
 
-    if(!token) throw new Error('Error processing the jwt token!');
+    if (!token) throw new Error('Not authorized to access this route')
 
     try {
         // verify

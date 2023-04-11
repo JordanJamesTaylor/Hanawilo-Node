@@ -7,6 +7,7 @@ const {
     getUser,
     putUser,
     deleteUser,
+    login
 } = require('../controllers/userController.js');
 
 // validation middleware
@@ -18,6 +19,9 @@ router.route('/')
     .get(adminValidator, protectedRoute, getUsers)
     .post(postUser)
     .delete(protectedRoute, deleteUsers)
+    
+router.route('/login')
+    .post(login)
 
 router.route('/:userId')
     .get(protectedRoute, getUser)
