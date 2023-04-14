@@ -9,4 +9,4 @@ const adminValidator = async (req, res, next) => {
     }
 }
 
-module.exports = adminValidator;
+modules.export = adminValidator;
