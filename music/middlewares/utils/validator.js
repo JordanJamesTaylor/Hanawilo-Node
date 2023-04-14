@@ -5,7 +5,7 @@ const adminValidator = async (req, res, next) => {
         res
         .status(403)
         .setHeader('Content-Type', 'application/json')
-        .json({ message: "Unauthorized to access this resource." })
+        .json({ message: "Unauthorized to access this resource." });
     }
 }
 
